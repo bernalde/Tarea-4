@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+
+float *load_matrix(char *filename, int *n, int *m);
+int main(int argc, char **argv){
+  float *G;
+  int n_row1, n_col1;
+
+  G = load_matrix(argv[1], &n_row1, &n_cols1);
+
+    for(i=0;i<n_row1;i++){
+      for(j=0;j<n_col1;j++){
+	printf(" %f ", G[i*n_col1 + j]);
+      }
+      printf("\n");
+    }
+
+    return 0;
+  }
+
+}
+
+float *load_matrix(char *filename, int *n, int *m){
+  float *matrix;
+  FILE *in;
+  int n_row, n_cols;
+  int i;
+  int j;
+
+  if(!(in=fopen(filename, "r"))){
+    printf("Problem opening file %s\n", filename);
+    exit(1);
+  }
+  fscanf(in, "%d %d\n", &n_row, &n_cols);
+  
+  matrix = malloc(n_row * n_cols * sizeof(float));
+
+  for(i=0;i<n_row;i++){
+    for(j=0;j<n_cols;j++){
+      fscanf(in, "%f", &matrix[i*n_cols + j]);
+    }
+  }    
+  *n = n_row;
+  *m = n_cols;
+  return matrix;
+}
+

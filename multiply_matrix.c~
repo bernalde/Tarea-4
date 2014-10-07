@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <stdlib.h>
+float *new_matrix(int n, int m);
+float *load_matrix(char *filename, int *n, int *m);
+void multiplicacion(float *A, float *B, float *C, int n, int m, int p);
+int main(int argc, char **argv){
+  float *matrix1;
+  float *matrix2;
+  float *matrix3;
+  int n_row1, n_cols1;
+  int n_row2, n_cols2;
+  int i, j, k;
+  float new=0;
+
+  matrix1 = load_matrix(argv[1], &n_row1, &n_cols1);
+  matrix2 = load_matrix(argv[2], &n_row2, &n_cols2);
+  matrix3 = new_matrix(n_row1, n_cols2);
+
+  if(n_cols1!=n_row2){
+    printf("No se pueden multiplicar las matrices");
+      }
+  else{
+
+    multiplicacion(matrix1,matrix2,matrix3,n_row1,n_cols2,n_cols1);
+
+    for(i=0;i<n_row1;i++){
+      for(j=0;j<n_cols2;j++){
+	printf(" %f ", matrix3[i*n_cols2 + j]);
+      }
+      printf("\n");
+    }
+
+    return 0;
+  }
+
+}
+
+void multiplicacion(float *A, float *B, float *C, int n, int m, int p){
+
+  int i, j, k;
+ 
+  for(i=0;i<n;i++){
+    for(j=0;j<m;j++){
+    C[i*m+j]=0.0;
+      for(k=0;k<p;k++){
+	C[i*m+j]+=A[i*p+k]*B[k*m+j];
+      }
+    }
+  }
+ 
+}
+
+
+
+float *load_matrix(char *filename, int *n, int *m){
+  float *matrix;
+  FILE *in;
+  int n_row, n_cols;
+  int i;
+  int j;
+
+  if(!(in=fopen(filename, "r"))){
+    printf("Problem opening file %s\n", filename);
+    exit(1);
+  }
+
+  fscanf(in, "%d %d\n", &n_row, &n_cols);
+  printf("%d %d\n", n_row, n_cols);
+
+  matrix = malloc(n_row * n_cols * sizeof(float));
+
+  for(i=0;i<n_row;i++){
+    for(j=0;j<n_cols;j++){
+      fscanf(in, "%f", &matrix[i*n_cols + j]);
+    }
+  }    
+  *n = n_row;
+  *m = n_cols;
+  return matrix;
+}
+
+
+float *new_matrix(int n_row, int n_cols){
+  float *matrix;
+  int i;
+  int j;
+
+  matrix = malloc(n_row * n_cols * sizeof(float));
+
+  for(i=0;i<n_row;i++){
+    for(j=0;j<n_cols;j++){
+      matrix[i*n_cols + j]=0.0;
+    }
+  }    
+  return matrix;
+}
+
